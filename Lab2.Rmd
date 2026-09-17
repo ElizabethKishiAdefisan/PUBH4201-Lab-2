@@ -1,0 +1,50 @@
+---
+title: "Lab2"
+output: html_document
+---
+
+## Setup
+
+Before anything is started, we are going to load the libraries for the biostatistics/Clinical trials data set
+
+```{r}
+library(survival)
+data(pbc)
+```
+
+## Non trivial analysis
+
+Now, we have our data points and we want to do something with it. Lets focus on cholestrol. Lets see cholestrols mean, low, medium, and high values
+
+```{r}
+truechol <- pbc$chol[!is.na(pbc$chol)]
+summary(truechol)
+```
+
+Now, we are to add the different levels of cholestrol based on risk.
+
+```{r}
+library(dplyr)
+chollevels <- as.data.frame(truechol)
+Chollevels <- chollevels %>%
+  mutate(risklevels = case_when(
+    truechol < 200 ~ "Low risk",
+    truechol < 300 ~ "Medium risk",
+    truechol < 400 ~ "High risk",
+    truechol > 500~ "Severe risk",
+  ))
+
+```
+
+## Visualization
+
+Here, we will visualize some data regarding the chol levels
+
+```{r}
+countsChol <- table(Chollevels)
+barplot(countsChol,
+        main = "Number of patients per cholestrol risk group",
+        xlab= "Category of risk level",
+        ylab= "Amount of patients",
+        col = "green")
+```
